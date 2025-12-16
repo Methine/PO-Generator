@@ -1,2 +1,19 @@
-# PO-Generator
-Po Generator based on python/html
+PO Generator based on python/html
+
+*目录下的文件
+1. PO_Generator.py 源代码
+2. po.db 数据库，保存一些已经写过的字段，可以直接调用，不用反复填写。
+3. logo.png 公司的logo图
+4. stamp.png 公司的角印图
+5. sales_rep_stamp 销售代表的印章图
+6. template.html PO模板
+
+以上文件不可以删除
+
+本模板可能最适合日本贸易公司。
+
+使用说明
+1. 填写所有内容，按最下面的生成，生成完毕后会在浏览器打开。可以将当前输入的字段保存到数据库，以便之后调用。
+2. 按打印（ctrl+P），转换为PDF，保存到任意位置，即可得到一份A4尺寸的PO。生存的html(报表的原始数据文件)默认保存在程序目录下，可以保留，或者删除。
+
+理论上后期可以做到数据同步调用等，不过近期不打算做。暂时先这么用着吧。 

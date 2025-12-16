@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Purchase Order</title>
+
+<style>
+@page {
+    size: A4;
+    margin: 25mm 20mm 25mm 20mm;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    color: #000;
+}
+
+.page {
+    position: relative;
+}
+
+/* ===== Header ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo-img {
+    height: 45px;
+    margin-bottom: 6px;
+}
+
+.company-info {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.stamp-img {
+    position: absolute;
+    top: 10mm;     /* 上下位置，慢慢微调 */
+    right: 60mm;   /* 右边对齐页边距 */
+    width: 24mm;
+    opacity: 0.9;
+}
+
+/* ===== Sales Rep Stamp Box ===== */
+.sales-rep-box {
+    position: absolute;
+    top: 10mm;          /* 与公司章对齐，可微调 */
+    right: 20mm;        /* 在公司章右侧（比 60mm 小） */
+    width: 20mm;
+    border: 1.5px solid #000;
+    border-collapse: separate;
+    background: #fff;
+    font-size: 12px;
+}
+
+.sales-rep-box td {
+    border-bottom: 1px solid #000;
+    text-align: center;
+    padding: 4px;
+}
+
+.sales-rep-box tr:last-child td {
+    border-bottom: none;
+}
+
+.sales-rep-stamp {
+    width: 10.5mm;
+    height: auto;
+}
+
+
+/* ===== Title ===== */
+h1 {
+    font-size: 22px;
+    text-align: center;
+    margin: 25px 0 18px;
+    font-weight: bold;
+}
+
+/* ===== Tables (global) ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+td, th {
+    padding: 6px 8px;
+    vertical-align: middle;
+}
+
+/* 外框（像 Word 的大框） */
+.box {
+    border: 1.5px solid #000;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* 内部表格不画框 */
+.no-border td {
+    border: none !important;
+    padding: 4px 6px;
+}
+
+/* 行分隔线（Word 感的关键） */
+.info-row td {
+    border-bottom: 1px solid #000;
+}
+
+/* label 栏 */
+.label {
+    width: 110px;
+    font-weight: bold;
+    background: #f3f3f3;
+}
+
+/* 右侧信息区行高 */
+.right-table td {
+    height: 28px;
+}
+
+/* ===== Item table ===== */
+.items {
+    border: 1.5px solid #000;
+}
+
+.items th {
+    border: 1px solid #000;
+	padding: 3px 6px;
+	line-height: 1.2;
+    background: #f0f0f0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.items td {
+    border: 1px solid #000;
+    padding: 3px 6px;     
+    line-height: 1.2;     /* 行距更像PO表格 */
+    height: auto;         
+}
+
+.right {
+    text-align: right;
+}
+
+/* ===== Footer ===== */
+.footer {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.issued {
+    margin-top: 40px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<!-- Header -->
+<div class="header">
+    <div class="company-info">
+        <img src="logo.png" class="logo-img"><br>
+        <strong>xxxxx CO., LTD.</strong><br>
+        99F, White House<br>
+        Address 2<br>
+        TEL: +1 23456789
+    </div>
+</div>
+
+<img src="stamp.png" class="stamp-img">
+
+<table class="sales-rep-box">
+    <tr>
+        <td><strong>Sales Rep.</strong></td>
+    </tr>
+    <tr>
+        <td>
+            <img src="sales_rep_stamp.png" class="sales-rep-stamp">
+        </td>
+    </tr>
+</table>
+
+
+<h1>Purchase Order</h1>
+
+<!-- To / PO Info -->
+<!-- ===== TOP INFO (4 BOXES) ===== -->
+<table style="width:100%; border-collapse:collapse;">
+<tr>
+<td width="50%" style="padding-right:6px; vertical-align:top;">
+
+    <!-- To -->
+    <table class="box">
+        <tr class="info-row">
+            <td class="label">To:</td>
+            <td>{{supplier_name}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Address:</td>
+            <td>{{supplier_address}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Attn:</td>
+            <td>{{supplier_attn}}</td>
+        </tr>
+        <tr>
+            <td class="label">Tel:</td>
+            <td>{{supplier_tel}}</td>
+        </tr>
+    </table>
+
+</td>
+
+<td width="50%" style="padding-left:6px; vertical-align:top;">
+
+    <!-- PO Info -->
+    <table class="box">
+        <tr class="info-row">
+            <td class="label">PO Number:</td>
+            <td>{{po_number}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">PO Date:</td>
+            <td>{{po_date}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Internal No.:</td>
+            <td>{{internal_no}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">ETD Port:</td>
+            <td>{{etd_port}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">ETD Date:</td>
+            <td>{{etd_date}}</td>
+        </tr>
+    </table>
+
+</td>
+</tr>
+</table>
+
+<table style="width:100%; border-collapse:collapse;">
+<tr>
+<td width="50%" style="padding-right:6px; vertical-align:top;">
+
+    <!-- Ship To -->
+    <table class="box">
+        <tr class="info-row">
+            <td class="label">Ship to:</td>
+            <td>{{ship_to}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Address:</td>
+            <td>{{ship_address}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Attn:</td>
+            <td>{{ship_attn}}</td>
+        </tr>
+        <tr>
+            <td class="label">Tel:</td>
+            <td>{{ship_tel}}</td>
+        </tr>
+    </table>
+
+</td>
+
+<td width="50%" style="padding-left:6px; vertical-align:top;">
+
+    <!-- Terms -->
+    <table class="box">
+        <tr class="info-row">
+            <td class="label">Delivery terms:</td>
+            <td>{{delivery_terms}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Forwarder:</td>
+            <td>{{forwarder}}</td>
+        </tr>
+        <tr class="info-row">
+            <td class="label">Payment Terms:</td>
+            <td>{{payment_terms}}</td>
+        </tr>
+        <tr>
+            <td class="label">Currency:</td>
+            <td>{{currency}}</td>
+        </tr>
+    </table>
+
+</td>
+</tr>
+</table>
+
+<!-- Items -->
+<table class="items">
+
+<tr>
+    <th width="15%">Item no.</th>
+    <th>Description</th>
+    <th width="15%">Quantity<br>pcs (set)</th>
+    <th width="15%">Unit Price<br>(USD)</th>
+    <th width="15%">Total Amount</th>
+</tr>
+
+<tbody>
+{{items_html}}
+</tbody>
+
+</table>
+
+<table class="box">
+<tr>
+    <td class="right"><strong>Total (USD):</strong></td>
+    <td width="140" class="right">{{total_amount}}</td>
+</tr>
+</table>
+
+<div class="footer">
+    <p><strong>Packing:</strong> {{packing}}</p>
+    <p><strong>Remark:</strong> {{remark}}</p>
+</div>
+
+<div class="issued">
+    Issued by:<br>
+    Company Name<br>
+    Rep.：{{issuer_name}}
+</div>
+
+</div>
+</body>
+</html>
