@@ -39,8 +39,8 @@ body {
 
 .stamp-img {
     position: absolute;
-    top: 10mm;     /* 上下位置，慢慢微调 */
-    right: 60mm;   /* 右边对齐页边距 */
+    top: 10mm;     
+    right: 60mm;   
     width: 24mm;
     opacity: 0.9;
 }
@@ -167,15 +167,15 @@ td, th {
 <!-- Header -->
 <div class="header">
     <div class="company-info">
-        <img src="logo.png" class="logo-img"><br>
-        <strong>xxxxx CO., LTD.</strong><br>
-        99F, White House<br>
-        Address 2<br>
-        TEL: +1 23456789
+        <img src="{{logo_b64}}" class="logo-img"><br>
+        <strong>XXXXX TRADING CO., LTD.</strong><br>
+        1F, White House<br>
+        1-1-1 Chiyoda, Tokyo, Japan<br>
+        TEL: +1 234-56789
     </div>
 </div>
 
-<img src="stamp.png" class="stamp-img">
+<img src="{{stamp_b64}}" class="stamp-img">
 
 <table class="sales-rep-box">
     <tr>
@@ -183,7 +183,7 @@ td, th {
     </tr>
     <tr>
         <td>
-            <img src="sales_rep_stamp.png" class="sales-rep-stamp">
+            <img src="{{sales_rep_stamp_b64}}" class="sales-rep-stamp">
         </td>
     </tr>
 </table>
@@ -332,8 +332,8 @@ td, th {
 
 <div class="issued">
     Issued by:<br>
-    Company Name<br>
-    Rep.：{{issuer_name}}
+    XXXXX貿易株式会社<br>
+    担当者：{{issuer_name}}
 </div>
 
 </div>

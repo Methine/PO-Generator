@@ -4,8 +4,11 @@ from tkcalendar import DateEntry
 import sqlite3, os
 import webbrowser
 from datetime import datetime
+import base64
+import mimetypes
+import ctypes
 
-# ================= 基础 =================
+# ================= Basic Function =================
 def fmt_date(d):
     day = d.day
     if 11 <= day <= 13:
@@ -13,8 +16,8 @@ def fmt_date(d):
     else:
         suffix = {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
 
-    month = d.strftime("%b")  # Mar
-    year = d.strftime("%Y")   # 2025
+    month = d.strftime("%b")  
+    year = d.strftime("%Y")  
 
     return f"{day}{suffix} {month}. {year}"
 
@@ -33,9 +36,9 @@ def format_amount(v):
     except:
         return "0.00"
 
-#os.makedirs("output", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
-# ================= 数据库 =================
+# ================= Database =================
 conn = sqlite3.connect("po.db")
 cur = conn.cursor()
 
@@ -73,6 +76,7 @@ issuer_name TEXT
 conn.commit()
 
 # ================= UI =================
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 root = tk.Tk()
 root.title("PO Generator")
 root.geometry("1050x600")
@@ -81,7 +85,7 @@ nb.pack(fill="both", expand=True)
 
 widgets = {}
 
-# ---------- 通用 ----------
+# ---------- General ----------
 def add_entry(f, r, label, key, w=60):
     ttk.Label(f, text=label).grid(row=r, column=0, sticky="e", padx=6, pady=4)
     e = ttk.Entry(f, width=w)
@@ -94,6 +98,22 @@ def add_text(f, r, label, key, h=4):
     t.grid(row=r, column=1, sticky="w")
     widgets[key] = t
 
+def img_to_data_uri(path: str) -> str:
+        """
+        将图片文件转成 data URI: data:image/png;base64,xxxx
+        找不到文件时返回空字符串（也可以改成 raise）
+        """
+        if not os.path.exists(path):
+            return ""  # 或者：raise FileNotFoundError(path)
+
+        mime, _ = mimetypes.guess_type(path)
+        if not mime:
+            mime = "application/octet-stream"
+
+        with open(path, "rb") as fimg:
+            b64 = base64.b64encode(fimg.read()).decode("utf-8")
+        return f"data:{mime};base64,{b64}"
+        
 # ================= Supplier =================
 f = ttk.Frame(nb); nb.add(f, text="Supplier")
 cb = ttk.Combobox(f, width=45, state="readonly")
@@ -338,7 +358,11 @@ def generate():
     def gv(k):
         w=widgets[k]
         return w.get("1.0","end").strip() if isinstance(w,tk.Text) else w.get()
-
+        
+    html = html.replace("{{logo_b64}}", img_to_data_uri("logo.png"))
+    html = html.replace("{{stamp_b64}}", img_to_data_uri("stamp.png"))
+    html = html.replace("{{sales_rep_stamp_b64}}", img_to_data_uri("sales_rep_stamp.png"))
+    
     for k in widgets:
         if k == "po_date":
             v = fmt_date(widgets["po_date"].get_date())
@@ -360,7 +384,7 @@ def generate():
     html=html.replace("{{items_html}}",item_html)
     html=html.replace("{{total_amount}}",total_var.get())
 
-    fn=f"PO_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+    fn=f"output/PO_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
     open(fn,"w",encoding="utf-8").write(html)
     webbrowser.open(f"file:///{os.path.abspath(fn)}")
     messagebox.showinfo("Done",f"Generated:\n{fn}")
